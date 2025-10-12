@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+  name: ic-deploy-nautilus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ic-nautilus
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ic-nautilus
+    spec:
+      volumes:
+      - name: ic-volume-nautilus
+        emptyDir: {}
+      initContainers: 
+      - image: debian:latest
+        name: ic-msg-nautilus
+        command: ["/bin/bash", "-c", "echo Init Done - Welcome to xFusionCorp Industries > /ic/beta"]
+        volumeMounts:
+        - name: ic-volume-nautilus
+          mountPath: /ic
+      containers: 
+      - image: debian:latest
+        name: ic-main-nautilus
+        command: ["/bin/bash", "-c", "while true; do cat /ic/beta; sleep 5; done"]
+        volumeMounts:
+        - name: ic-volume-nautilus
+          mountPath: /ic
+
+        
